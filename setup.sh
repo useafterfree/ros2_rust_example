@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # docker run --hostname=08185713c717 --mac-address=2e:fc:2f:a0:ff:58 --env=DISPLAY=host.docker.internal:0 --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=LANG=C.UTF-8 --env=LC_ALL=C.UTF-8 --env=ROS_DISTRO=rolling --volume=/tmp/.X11-unix:/tmp/.X11-unix:rw --volume=/Users/boolean/ros2_ws:/root/ros2_ws --network=bridge -p 8765:8765 --restart=no --label='org.opencontainers.image.ref.name=ubuntu' --label='org.opencontainers.image.version=24.04' --runtime=runc -t -d osrf/ros:rolling-desktop
 
 apt update
