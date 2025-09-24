@@ -1,10 +1,13 @@
+use rclrs::*;
+
 // ROS2 publisher
 fn main() -> Result<(), anyhow::Error> {
 
-    let context = rclrs::Context::new(std::env::args())?;
-    let node = rclrs::create_node(&context, "rust_publisher")?;
+    let context = Context::default_from_env()?;
+    let executor = context.create_basic_executor();
+    let node = executor.create_node("rust_publisher")?;
     let publisher =
-        node.create_publisher::<std_msgs::msg::String>("topic", rclrs::QOS_PROFILE_DEFAULT)?;
+        node.create_publisher::<std_msgs::msg::String>("rusttopic")?;
 
     let mut message = std_msgs::msg::String::default();
     let mut counter: u32 = 1;
