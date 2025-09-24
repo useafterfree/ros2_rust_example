@@ -10,7 +10,7 @@ source /opt/ros/rolling/setup.bash
 
 ## https://medium.com/@arohanaday/how-i-set-up-ros-2-on-my-macbook-using-docker-without-losing-my-sanity-fe6e55857cc2
 ## Rust library for foxglove
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -- -y
 
 apt install -y git libclang-dev python3-pip python3-vcstool python3.12-venv
 
