@@ -13,9 +13,18 @@ fn main() -> Result<(), anyhow::Error> {
 
     println!("Waiting for messages...");
 
+    let publisher =
+        node.create_publisher::<std_msgs::msg::String>("rusttopic_len")?;
+
     let _subscription = node.create_subscription::<std_msgs::msg::String, _>(
         "rusttopic",
-        callback
+        move |msg: std_msgs::msg::String| {
+            callback(msg.clone());
+            let len_msg = std_msgs::msg::String {
+                data: format!("Length: {}", msg.data.len()),
+            };
+            publisher.publish(&len_msg).unwrap();
+        }
     )?;
 
     executor.spin(SpinOptions::default());

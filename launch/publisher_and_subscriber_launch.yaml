@@ -8,3 +8,7 @@ launch:
     pkg: 'rust_example'
     exec: 'subscriber'
     output: 'screen'
+- node:
+    pkg: 'rust_example'
+    exec: 'udppublisher'
+    output: 'screen'
