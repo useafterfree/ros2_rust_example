@@ -16,6 +16,16 @@ source ~/.bashrc
 mkdir -p /root/rust_ws/src && cd /root/rust_ws
 
 git clone https://github.com/useafterfree/ros2_rust_example src/ros2_rust_example
-time colcon build --executor sequential --cmake-args -DCMAKE_BUILD_TYPE=Release
+cd src/ros2_rust_example && git checkout gstreamer && git pull
+cd /root/rust_ws
 
+source /root/foxglove-rust/bin/activate
+source /opt/ros/rolling/setup.bash
+cd /root/rust_ws
+source ~/.profile
 source ./install/setup.sh
+
+
+colcon build
+source ./install/setup.sh
+ros2 pkg executables | grep rust
