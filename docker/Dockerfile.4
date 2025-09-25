@@ -1,0 +1,9 @@
+ARG BASE_IMAGE=localhost:50000/rolling-full:latest
+FROM ${BASE_IMAGE}
+
+COPY setup-user-code.sh /root/setup-user-code.sh
+
+RUN chmod +x /root/setup-user-code.sh && /root/setup-user-code.sh
+
+RUN rm /root/*.sh
+

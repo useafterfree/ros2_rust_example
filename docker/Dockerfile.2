@@ -1,0 +1,6 @@
+ARG BASE_IMAGE=localhost:50000/rolling-deps:latest
+FROM ${BASE_IMAGE}
+
+COPY setup-rust-python.sh /root/setup-rust-python.sh
+
+RUN chmod +x /root/setup-rust-python.sh && /root/setup-rust-python.sh

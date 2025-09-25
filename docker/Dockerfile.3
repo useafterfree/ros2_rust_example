@@ -1,0 +1,8 @@
+ARG BASE_IMAGE=localhost:50000/rolling-deps2:latest
+FROM ${BASE_IMAGE}
+
+COPY setup-colcon.sh /root/setup-colcon.sh
+
+RUN mkdir -p /root/rust_ws/src && cd /root/rust_ws
+
+RUN chmod +x /root/setup-colcon.sh && /root/setup-colcon.sh

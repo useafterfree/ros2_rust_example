@@ -1,0 +1,10 @@
+ARG BASE_IMAGE=osrf/ros:rolling-desktop@sha256:1e5bc9496885c33a2fdbdfc530eec8accddbb3a302ba8a7f9164b189a457fbfa
+FROM ${BASE_IMAGE}
+
+RUN apt update
+RUN apt install -y ros-$ROS_DISTRO-foxglove-bridge vim screen ros-rolling-test-msgs \
+    git libclang-dev python3-pip python3-vcstool python3.12-venv \
+    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+    gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav libgstrtspserver-1.0-dev libges-1.0-dev gstreamer1.0-tools
