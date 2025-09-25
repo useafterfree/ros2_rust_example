@@ -1,6 +1,6 @@
+use gst::prelude::*;
 use gstreamer as gst;
 use gstreamer_app as gst_app;
-use gst::prelude::*;
 
 use rclrs::*;
 use sensor_msgs::msg::CompressedImage;
@@ -38,11 +38,25 @@ fn main() -> Result<(), anyhow::Error> {
     let depay = gst::ElementFactory::make("rtph264depay").build()?;
     let parse = gst::ElementFactory::make("h264parse").build()?;
 
+    let avdec_h264 = gst::ElementFactory::make("avdec_h264").build()?;
+    let videoconvert = gst::ElementFactory::make("videoconvert").build()?;
+    let jpegenc = gst::ElementFactory::make("jpegenc").build()?;
+
+    let jpeg_caps = gst::Caps::builder("image/jpeg")
+        .field("width", 1920i32)
+        .field("height", 1080i32)
+        .field("framerate", gst::Fraction::new(30, 1))
+        .build();
+
+    let capsfilter = gst::ElementFactory::make("capsfilter", Some("jpeg_caps")).unwrap();
+    capsfilter.set_property("caps", &jpeg_caps).unwrap();
+
     let appsink = gst_app::AppSink::builder()
         .caps(
-            &gst::Caps::builder("video/x-h264")
+            &gst::Caps::builder("image/jpeg")
                 // you could restrict profile/stream-format here if needed
                 .build(),
+            &jpeg_caps,
         )
         .sync(false)
         .build();
@@ -74,7 +88,7 @@ fn main() -> Result<(), anyhow::Error> {
 
                 // Wrap into ROS2 CompressedImage
                 let mut msg = CompressedImage::default();
-                msg.format = "h264".to_string();
+                msg.format = "jpeg".to_string();
                 msg.data = map.as_slice().to_vec();
 
                 // Optionally fill in ROS2 header timestamp
@@ -90,9 +104,25 @@ fn main() -> Result<(), anyhow::Error> {
             .build(),
     );
 
-
-    pipeline.add_many(&[&src, &capsfilter, &depay, &parse, appsink.upcast_ref()])?;
-    gst::Element::link_many(&[&capsfilter, &depay, &parse, appsink.upcast_ref()])?;
+    pipeline.add_many(&[
+        &src,
+        &capsfilter,
+        &depay,
+        &parse,
+        &avdec_h264,
+        &videoconvert,
+        &jpegenc,
+        appsink.upcast_ref(),
+    ])?;
+    gst::Element::link_many(&[
+        &capsfilter,
+        &depay,
+        &parse,
+        &avdec_h264,
+        &videoconvert,
+        &jpegenc,
+        appsink.upcast_ref(),
+    ])?;
     src.link(&capsfilter)?;
     println!("Starting pipeline...");
     pipeline.set_state(gst::State::Playing).unwrap();
