@@ -1,3 +1,5 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use gst::prelude::*;
 use gstreamer as gst;
 use gstreamer_app as gst_app;
@@ -58,6 +60,7 @@ fn main() -> Result<(), anyhow::Error> {
     appsink.set_callbacks(
         gst_app::AppSinkCallbacks::builder()
             .new_sample(move |appsink| {
+                let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
                 println!("New sample received");
                 let sample = appsink.pull_sample().map_err(|_| gst::FlowError::Eos)?;
                 let buffer = sample.buffer().ok_or_else(|| {
@@ -81,6 +84,9 @@ fn main() -> Result<(), anyhow::Error> {
                 // Wrap into ROS2 CompressedImage
                 let mut msg = CompressedImage::default();
                 msg.format = "jpeg".to_string();
+                msg.header.stamp.sec = now.as_secs() as i32;
+                msg.header.stamp.nanosec = now.subsec_nanos();
+                msg.header.frame_id = "camera".to_string();
                 msg.data = map.as_slice().to_vec();
 
                 // Optionally fill in ROS2 header timestamp
