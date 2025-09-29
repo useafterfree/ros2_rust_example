@@ -43,9 +43,9 @@ fn main() -> Result<(), anyhow::Error> {
     let jpegenc = gst::ElementFactory::make("jpegenc").build()?;
 
     let jpeg_caps = gst::Caps::builder("image/jpeg")
-        .field("width", 1920i32)
-        .field("height", 1080i32)
-        .field("framerate", gst::Fraction::new(30, 1))
+        // .field("width", 1920i32)
+        // .field("height", 1080i32)
+        // .field("framerate", gst::Fraction::new(30, 1))
         .build();
 
     let appsink = gst_app::AppSink::builder()
