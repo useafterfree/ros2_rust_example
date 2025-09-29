@@ -48,16 +48,8 @@ fn main() -> Result<(), anyhow::Error> {
         .field("framerate", gst::Fraction::new(30, 1))
         .build();
 
-    let capsfilter = gst::ElementFactory::make("capsfilter", Some("jpeg_caps")).unwrap();
-    capsfilter.set_property("caps", &jpeg_caps).unwrap();
-
     let appsink = gst_app::AppSink::builder()
-        .caps(
-            &gst::Caps::builder("image/jpeg")
-                // you could restrict profile/stream-format here if needed
-                .build(),
-            &jpeg_caps,
-        )
+        .caps(&jpeg_caps)
         .sync(false)
         .build();
 
