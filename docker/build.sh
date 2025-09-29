@@ -4,8 +4,9 @@ set -e
 
 ## check for "rebuild" argument
 REBUILD=""
+
 if [ "$1" == "rebuild" ]; then
-    REBUILD=""--no-cache"
+    REBUILD="--no-cache";
 fi
 
 BASE_IMAGE="osrf/ros:rolling-desktop@sha256:1e5bc9496885c33a2fdbdfc530eec8accddbb3a302ba8a7f9164b189a457fbfa"
