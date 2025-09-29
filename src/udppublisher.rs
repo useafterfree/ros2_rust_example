@@ -53,6 +53,8 @@ fn main() -> Result<(), anyhow::Error> {
     let appsink = gst_app::AppSink::builder()
         .caps(&jpeg_caps)
         .sync(false)
+        .drop(true)
+        .max_buffers(1)
         .build();
 
     // Clone publisher into closure
@@ -61,7 +63,7 @@ fn main() -> Result<(), anyhow::Error> {
         gst_app::AppSinkCallbacks::builder()
             .new_sample(move |appsink| {
                 let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-                println!("New sample received");
+                println!("New sample received {}", now.as_secs());
                 let sample = appsink.pull_sample().map_err(|_| gst::FlowError::Eos)?;
                 let buffer = sample.buffer().ok_or_else(|| {
                     gst::element_error!(
