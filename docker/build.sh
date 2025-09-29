@@ -2,6 +2,12 @@
 
 set -e
 
+## check for "rebuild" argument
+REBUILD=""
+if [ "$1" == "rebuild" ]; then
+    REBUILD=""--no-cache"
+fi
+
 BASE_IMAGE="osrf/ros:rolling-desktop@sha256:1e5bc9496885c33a2fdbdfc530eec8accddbb3a302ba8a7f9164b189a457fbfa"
 STEPTWO_IMAGE="localhost:50000/ros2-rust-deps-1:latest"
 STEPTHREE_IMAGE="localhost:50000/ros2-rust-deps-2:latest"
@@ -21,5 +27,5 @@ docker buildx build --platform linux/amd64 --tag ${STEPFOUR_IMAGE} --build-arg B
     -f Dockerfile.3 --push .
 
 echo "Building FINAL image (user code): ${FINAL_IMAGE} from base image: ${STEPFOUR_IMAGE}"
-docker buildx build --platform linux/amd64 --tag ${FINAL_IMAGE} --build-arg BASE_IMAGE=${STEPFOUR_IMAGE} \
+docker buildx build ${REBUILD} --platform linux/amd64 --tag ${FINAL_IMAGE} --build-arg BASE_IMAGE=${STEPFOUR_IMAGE} \
     -f Dockerfile.4 --push .
