@@ -89,10 +89,6 @@ fn main() -> Result<(), anyhow::Error> {
                 msg.header.frame_id = "camera".to_string();
                 msg.data = map.as_slice().to_vec();
 
-                // Optionally fill in ROS2 header timestamp
-                // msg.header.stamp = builtin_interfaces::msg::Time { sec: ..., nanosec: ... };
-                // msg.header.frame_id = "camera".to_string();
-
                 if let Err(e) = pub_clone.publish(&msg) {
                     eprintln!("Publish error: {e:?}");
                 }
