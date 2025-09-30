@@ -1,4 +1,4 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use gst::prelude::*;
 use gstreamer as gst;
@@ -57,13 +57,29 @@ fn main() -> Result<(), anyhow::Error> {
         .max_buffers(1)
         .build();
 
+    let mut sample_count: u64 = 0;
+    let last: Duration = Duration::from_millis(0);
+
     // Clone publisher into closure
     let pub_clone = publisher.clone();
     appsink.set_callbacks(
         gst_app::AppSinkCallbacks::builder()
             .new_sample(move |appsink| {
                 let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-                println!("New sample received {}", now.as_secs());
+                let fps = 1.0 / (now - last).as_secs_f64();
+                if fps.is_finite() {
+                    if sample_count % 10 == 0 {
+                        print!(
+                            "sample {} received @{} FPS: {}",
+                            sample_count,
+                            now.as_secs(),
+                            fps
+                        );
+                    }
+                }
+
+                last = now;
+                sample_count += 1;
                 let sample = appsink.pull_sample().map_err(|_| gst::FlowError::Eos)?;
                 let buffer = sample.buffer().ok_or_else(|| {
                     gst::element_error!(
