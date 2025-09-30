@@ -58,7 +58,7 @@ fn main() -> Result<(), anyhow::Error> {
         .build();
 
     let mut sample_count: u64 = 0;
-    let last: Duration = Duration::from_millis(0);
+    let mut last: Duration = Duration::from_millis(0);
 
     // Clone publisher into closure
     let pub_clone = publisher.clone();

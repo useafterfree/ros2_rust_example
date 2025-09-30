@@ -1,13 +1,13 @@
-use gstreamer as gst;
 use gst::prelude::*;
+use gstreamer as gst;
 
 // Make a GStreamer UDP pipeline with appsink into a ROS2 publisher
 use anyhow::Error;
 use byte_slice_cast::*;
 use derive_more::derive::{Display, Error};
-use gst::{element_error, prelude::*};
-use gstreamer_audio as gst_audio;
+use gst::element_error;
 use gstreamer_app as gst_app;
+use gstreamer_audio as gst_audio;
 
 // #[path = "../examples-common.rs"]
 // mod examples_common;
