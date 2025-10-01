@@ -1,5 +1,8 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+
 use gst::prelude::*;
 use gstreamer as gst;
 use gstreamer_app as gst_app;
@@ -70,7 +73,7 @@ fn main() -> Result<(), anyhow::Error> {
                 if fps.is_finite() {
                     if sample_count % 10 == 0 {
                         print!(
-                            "sample {} received @{} FPS: {}",
+                            "\rsample {} received @{} FPS: {}",
                             sample_count,
                             now.as_secs(),
                             fps
@@ -137,6 +140,19 @@ fn main() -> Result<(), anyhow::Error> {
     ])?;
     src.link(&capsfilter)?;
     println!("Starting pipeline...");
+
+    // let done = Arc::new(AtomicBool::new(false));
+
+    // // Set up Ctrl+C handler
+    // ctrlc::set_handler({
+    //     let done = done.clone();
+    //     move || {
+    //         println!("\nShutting down udppublisher ...");
+    //         done.store(true, Ordering::Relaxed);
+    //     }
+    // })
+    // .context("Failed to set SIGINT handler")?;
+
     pipeline.set_state(gst::State::Playing).unwrap();
     println!("Pipeline running, relaying UDP H264 to ROS2 topic h264/compressed");
 
@@ -175,8 +191,8 @@ fn main() -> Result<(), anyhow::Error> {
     // });
 
     // GStreamer main loop
-    let main_loop = glib::MainLoop::new(None, false);
-    main_loop.run();
+    // let main_loop = glib::MainLoop::new(None, false);
+    // main_loop.run();
 
     // ros_thread.join().unwrap();
 

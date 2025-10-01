@@ -5,6 +5,8 @@ ros2 run rust_example udppublisher;
 ## Run GStreamer to receive and display video
 gst-launch-1.0 udpsrc port=5000   ! application/x-rtp, media=video, clock-rate=90000, encoding-name=H264   ! rtph264depay   ! h264parse   ! avdec_h264   ! videoconvert   ! jpegenc   ! image/jpeg,format=jpeg   ! appsink name=sink emit-signals=false sync=false max-buffers=1 drop=true
 
+
+docker pull localhost:50000/ros2-rust:latest
 docker run \
   --platform linux/amd64 \
   -it \

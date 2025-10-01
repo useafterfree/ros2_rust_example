@@ -19,5 +19,3 @@ EOF
 COPY . /root/rust_ws/src/ros2_rust_example
 WORKDIR /root/rust_ws
 RUN /bin/bash -c "source /root/foxglove-rust/bin/activate && source /opt/ros/rolling/setup.bash && cd /root/rust_ws && source ~/.profile && source ./install/setup.sh && colcon build"
-
-RUN ls src/ros2_rust_example
