@@ -1,0 +1,23 @@
+ARG BASE_IMAGE=localhost:50000/rolling-full:latest
+FROM ${BASE_IMAGE}
+
+# Install Rust + colcon support deps
+RUN cat <<'EOF' >> /root/.bashrc
+
+source /root/foxglove-rust/bin/activate
+source /opt/ros/rolling/setup.bash
+cd /root/rust_ws
+source ./install/setup.sh
+
+EOF
+
+# (Optional) Install foxglove-rust environment if required
+# Assuming /root/foxglove-rust is already available or built separately
+# Otherwise you would add steps here to install/activate it
+
+# Set workspace
+COPY . /root/rust_ws/src/ros2_rust_example
+WORKDIR /root/rust_ws
+RUN /bin/bash -c "source /root/foxglove-rust/bin/activate && source /opt/ros/rolling/setup.bash && cd /root/rust_ws && source ~/.profile && source ./install/setup.sh && colcon build"
+
+RUN ls src/ros2_rust_example

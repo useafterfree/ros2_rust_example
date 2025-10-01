@@ -38,16 +38,16 @@ FINAL_IMAGE="$REPO/ros2-rust:latest"
 
 echo "Building STEP 2 image (apt deps): ${STEPTWO_IMAGE} from base image: ${BASE_IMAGE}"
 docker buildx build --platform linux/amd64 --tag ${STEPTWO_IMAGE} --build-arg BASE_IMAGE=${BASE_IMAGE} \
-    -f Dockerfile.1 --push .
+    -f ./docker/Dockerfile.apt --push .
 
 echo "Building STEP 3 image (rust and python deps: ${STEPTHREE_IMAGE} from base image: ${STEPTWO_IMAGE}"
 docker buildx build --platform linux/amd64 --tag ${STEPTHREE_IMAGE} --build-arg BASE_IMAGE=${STEPTWO_IMAGE} \
-    -f Dockerfile.2 --push .
+    -f Dockerfile.rust-python --push .
 
 echo "Building STEP 4 image (colcon deps): ${STEPFOUR_IMAGE} from base image: ${STEPTHREE_IMAGE}"
 docker buildx build --platform linux/amd64 --tag ${STEPFOUR_IMAGE} --build-arg BASE_IMAGE=${STEPTHREE_IMAGE} \
-    -f Dockerfile.3 --push .
+    -f ./docker/Dockerfile.colcon --push .
 
 echo "Building FINAL image (user code): ${FINAL_IMAGE} from base image: ${STEPFOUR_IMAGE}"
-docker buildx build ${REBUILD} --platform linux/amd64 --tag ${FINAL_IMAGE} --build-arg BASE_IMAGE=${STEPFOUR_IMAGE} \
-    -f Dockerfile.4 --push .
+docker buildx build --progress plain ${REBUILD} --platform linux/amd64 --tag ${FINAL_IMAGE} --build-arg BASE_IMAGE=${STEPFOUR_IMAGE} \
+    -f ./docker/Dockerfile.user --push .
